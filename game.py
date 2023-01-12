@@ -10,8 +10,9 @@ class Board(object):
 
         self.board = []
         string = self.fen.split()
-        self.rules = string[1]
+        
         rows = string[0].split("/")
+        rules = string[1:]
 
         for i,row in enumerate(rows):
             self.board.append([])
@@ -21,6 +22,10 @@ class Board(object):
                 else:
                     for _ in range(int(cell)):
                         self.board[i].append(".")
+
+        self.rules["move"] = rules[0]
+        self.rules["castle"] = set(list(rules[1]))
+        self.rules["enpassant"] = rules[2]
 
     def update_fen(self):
         pass
