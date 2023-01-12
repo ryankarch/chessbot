@@ -6,7 +6,7 @@ class Board(object):
         self.rules = {}
         self.board = []
 
-        self.fen_to_board()
+        self.convert_fen_to_board()
 
     def convert_fen_to_board(self):
 
