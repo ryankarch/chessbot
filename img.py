@@ -1,5 +1,4 @@
 from PIL import Image
-from game import draw_board
 
 PIECE_SIZE = 133
 PIECES = {
@@ -18,6 +17,9 @@ PIECES = {
         }
 
 def draw_board(board: list) -> Image:
+    if not board:
+        return Image.open("./assets/BoardError.jpg")
+
     final = Image.open("./assets/Board.jpg")
 
     for i in range(8):
