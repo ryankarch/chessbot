@@ -20,9 +20,7 @@ async def generate(ctx, *, FEN):
     b = Board(FEN)
     b.parse_fen()
     draw_board(b.board)
-    # embed_ = discord.Embed(title = "Board", color = 0xF1C40F)
-    # file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
-    # embed_.set_image(url="attachment://board.jpg")
-    # await ctx.send(file=file_, embed=embed_)
+    file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
+    await ctx.send(file=file_)
 
 bot.run(TOKEN)
