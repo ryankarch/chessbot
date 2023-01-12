@@ -1,12 +1,14 @@
+import time
+
 class Board(object):
     def __init__(self, fen:str):
         self.fen = fen
-        self.board = []
         self.rules = {}
-
-        self.parse_fen()
+        self.board = []
 
     def parse_fen(self):
+
+        self.board = []
         string = self.fen.split()
         self.rules = string[1]
         rows = string[0].split("/")
@@ -19,11 +21,6 @@ class Board(object):
                 else:
                     for _ in range(int(cell)):
                         self.board[i].append(".")
-        
-        if all(len(r) == 8 for r in self.board) and len(self.board) == 8:
-            return self.board
-        else:
-            return []
 
     def update_fen(self):
         pass
@@ -31,3 +28,8 @@ class Board(object):
 
     def get_valid_moves(board: list[list]):
         pass
+
+
+if __name__ == "__main__":
+    b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+
