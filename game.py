@@ -34,7 +34,14 @@ class Board(object):
         # print(self.rules)
 
     def convert_board_to_fen(self):
-        pass
+        
+        new_fen = []
+        for row in self.board:
+            new_fen.append("".join(row))
+
+        new_fen = "/".join(new_fen)
+        
+        print(new_fen)
     # populate 2d list using fen string
 
     def get_valid_moves(self, piece: str):
@@ -53,4 +60,5 @@ if __name__ == "__main__":
     b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     b.convert_fen_to_board()
     print(get_cell_tuple("h1"))
+    b.convert_board_to_fen()
 
