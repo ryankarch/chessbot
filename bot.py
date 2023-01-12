@@ -1,4 +1,5 @@
 import json
+import asyncio
 
 import discord
 from discord.ext import commands    # gets the bot commands archive
@@ -22,5 +23,31 @@ async def generate(ctx, *, FEN):
     draw_board(b.board)
     file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
     await ctx.send(file=file_)
+
+@bot.command(pass_context=True)
+async def challenge(ctx, user=''):
+    if not user:
+        await ctx.send("Please select a user to challenge!")
+    else:
+        id = int(user[2:-1])
+        # if ctx.author.id == id:
+        #     await ctx.send("You cannot challenge yourself!")
+        #     return
+
+        msg = await ctx.send(f"{user}: Please accept or deny this challenge.")
+        await msg.add_reaction("✅")
+        await msg.add_reaction("❌")
+
+        def check(reaction, user):
+            return user.id == id and reaction.message.id == msg.id
+        try:
+            reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
+            if reaction.emoji == "✅":
+                await ctx.send("Accepted!")
+            elif reaction.emoji == "❌":
+                await ctx.send("Denied!")
+
+        except asyncio.TimeoutError:
+            await ctx.send("Challenge has timed out.")
 
 bot.run(TOKEN)
