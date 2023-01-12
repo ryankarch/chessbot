@@ -6,9 +6,9 @@ class Board(object):
         self.rules = {}
         self.board = []
 
-        self.convert_fen_to_board()
+        self.load_board_from_fen()
 
-    def convert_fen_to_board(self):
+    def load_board_from_fen(self):
 
         self.board = []
         string = self.fen.split()
@@ -33,7 +33,7 @@ class Board(object):
         # print(self.board)
         # print(self.rules)
 
-    def convert_board_to_fen(self):
+    def load_fen_from_board(self):
         
         new_fen = []
         for row in self.board:
@@ -47,8 +47,11 @@ class Board(object):
                 i += 1
             i -= 1
             new_fen = new_fen[0 : new_fen.find(".")] + str(i) + new_fen[new_fen.find(".") + i :]
-            print(new_fen)
-        print(new_fen)
+            
+        new_fen += " " + self.rules["move"]
+        new_fen += " " + "".join(self.rules["castle"]) + " " + self.rules["enpassant"]
+
+        self.fen = new_fen
     # populate 2d list using fen string
 
     def get_valid_moves(self, piece: str):
@@ -64,8 +67,10 @@ def get_cell_tuple(cell: str):
 
 
 if __name__ == "__main__":
-    b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-    b.convert_fen_to_board()
+    b = Board("3rkb1r/p5p1/7q/p1p2p2/7P/1PB1N1K1/P2Q4/3R3b w k - 0 28")
+    print(b.board)
+    b.load_fen_from_board()
     print(get_cell_tuple("h1"))
-    b.convert_board_to_fen()
+    b.load_board_from_fen()
+    print(b.fen)
 
