@@ -17,8 +17,9 @@ PIECES = {
         }
 
 def draw_board(board: list) -> None:
-    if not board:
+    if not board or len(board) != 8:
         Image.open("./assets/BoardError.jpg").save("./assets/RunningBoard.jpg")
+        return
 
     final = Image.open("./assets/Board.jpg")
 
