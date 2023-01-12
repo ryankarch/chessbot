@@ -18,7 +18,7 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 @bot.command(pass_context=True)
 async def generate(ctx, *, FEN):
     b = Board(FEN)
-    b.parse_fen()
+    b.load_board_from_fen()
     draw_board(b.board)
     file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
     await ctx.send(file=file_)

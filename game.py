@@ -29,6 +29,9 @@ class Board(object):
         self.rules["castle"] = list(rules[1])
         self.rules["enpassant"] = rules[2]
 
+        if self.rules["move"] == 'b':
+            self.board = self.board[::-1]
+
         # print(self.fen)
         # print(self.board)
         # print(self.rules)
