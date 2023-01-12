@@ -26,7 +26,7 @@ class Board(object):
                         self.board[i].append(".")
 
         self.rules["move"] = rules[0]
-        self.rules["castle"] = set(list(rules[1]))
+        self.rules["castle"] = list(rules[1])
         self.rules["enpassant"] = rules[2]
 
         # print(self.fen)
@@ -41,6 +41,13 @@ class Board(object):
 
         new_fen = "/".join(new_fen)
         
+        while (new_fen.find(".") != -1):
+            i = 0
+            while (all(char == "." for char in new_fen[new_fen.find(".") : new_fen.find(".") + i])):
+                i += 1
+            i -= 1
+            new_fen = new_fen[0 : new_fen.find(".")] + str(i) + new_fen[new_fen.find(".") + i :]
+            print(new_fen)
         print(new_fen)
     # populate 2d list using fen string
 
