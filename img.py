@@ -16,9 +16,9 @@ PIECES = {
             'K': Image.open("./assets/KingW.png")
         }
 
-def draw_board(board: list) -> Image:
+def draw_board(board: list) -> None:
     if not board:
-        return Image.open("./assets/BoardError.jpg")
+        Image.open("./assets/BoardError.jpg").save("./assets/RunningBoard.jpg")
 
     final = Image.open("./assets/Board.jpg")
 
@@ -27,9 +27,9 @@ def draw_board(board: list) -> Image:
             piece = board[i][j]
             
             if piece != ".":
-                final.paste(PIECES[piece], (PIECE_SIZE*j, PIECE_SIZE*i), PIECES[piece])
+                final.paste(PIECES[piece], (PIECE_SIZE*j + 30, PIECE_SIZE*i + 30), PIECES[piece])
     
-    return final
+    final.save("./assets/RunningBoard.jpg")
 
 
 if __name__ == "__main__":
