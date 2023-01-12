@@ -30,9 +30,9 @@ async def challenge(ctx, user=''):
         await ctx.send("Please select a user to challenge!")
     else:
         id = int(user[2:-1])
-        # if ctx.author.id == id:
-        #     await ctx.send("You cannot challenge yourself!")
-        #     return
+        if ctx.author.id == id:
+            await ctx.send("You cannot challenge yourself!")
+            return
 
         msg = await ctx.send(f"{user}: Please accept or deny this challenge.")
         await msg.add_reaction("✅")
@@ -49,5 +49,9 @@ async def challenge(ctx, user=''):
 
         except asyncio.TimeoutError:
             await ctx.send("Challenge has timed out.")
+
+@bot.command(pass_context=True)
+async def code(ctx):
+    await ctx.send("My code can be found here:\nhttps://github.com/ryankarch/chessbot")
 
 bot.run(TOKEN)
