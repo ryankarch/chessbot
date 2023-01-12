@@ -1,24 +1,33 @@
-def draw_board(FEN: str) -> list[list]:
+class Board(object):
+    def __init__(self, fen:str):
+        self.fen = fen
+        self.board = []
+        self.rules = {}
 
-    string = FEN.split()
-    rules = string[1]
-    board = string[0].split("/")
+        self.parse_fen()
 
-    rep = []
-    for i,row in enumerate(board):
-        rep.append([])
-        for cell in row:
-            if cell.isalpha():
-                rep[i].append(cell)
-            else:
-                for _ in range(int(cell)):
-                    rep[i].append(".")
-    
-    if all(len(r) == 8 for r in rep) and len(rep) == 8:
-        return rep
-    else:
-        return []
+    def parse_fen(self):
+        string = self.fen.split()
+        self.rules = string[1]
+        rows = string[0].split("/")
+
+        for i,row in enumerate(rows):
+            self.board.append([])
+            for cell in row:
+                if cell.isalpha():
+                    self.board[i].append(cell)
+                else:
+                    for _ in range(int(cell)):
+                        self.board[i].append(".")
+        
+        if all(len(r) == 8 for r in self.board) and len(self.board) == 8:
+            return self.board
+        else:
+            return []
+
+    def update_fen(self):
+        pass
     # populate 2d list using fen string
 
-if __name__ == "__main__":
-    board = draw_board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    def get_valid_moves(board: list[list]):
+        pass
