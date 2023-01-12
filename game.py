@@ -6,7 +6,7 @@ class Board(object):
         self.rules = {}
         self.board = []
 
-    def parse_fen(self):
+    def fen_to_board(self):
 
         self.board = []
         string = self.fen.split()
@@ -27,7 +27,7 @@ class Board(object):
         self.rules["castle"] = set(list(rules[1]))
         self.rules["enpassant"] = rules[2]
 
-    def update_fen(self):
+    def board_to_fen(self):
         pass
     # populate 2d list using fen string
 
