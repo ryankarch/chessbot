@@ -3,34 +3,12 @@ import time
 class Board(object):
     def __init__(self, fen:str):
         self.fen = fen
-        self.board = []
         self.rules = {}
-
-        self.parse_fen()
+        self.board = []
 
     def parse_fen(self):
 
-        # rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR
-        self.board.append([])
-        row = 0
-        for key in self.fen:
-            if key.isalpha():
-                self.board[row].append(key)
-            if key == "/":
-                self.board.append([])
-                row += 1
-            if key.isdigit():
-                for _ in range(int(key)):
-                    self.board[row].append(".")
-            if key == " ":
-                break
-
-        # if all(len(r) == 8 for r in self.board) and len(self.board) == 8:
-        #     return self.board
-        # else:
-        #     return []
-    def parse_fen_2(self):
-
+        self.board = []
         string = self.fen.split()
         self.rules = string[1]
         rows = string[0].split("/")
@@ -55,15 +33,3 @@ class Board(object):
 if __name__ == "__main__":
     b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
 
-    start = time.time()
-    for _ in range(100000):
-        b.parse_fen()
-    total = time.time() - start
-    print(f"parse_fen took {total} seconds to run")
-
-    start = time.time()
-    for _ in range(100000):
-
-        b.parse_fen_2()
-    total = time.time() - start
-    print(f"parse_fen_2 took {total} seconds to run")
