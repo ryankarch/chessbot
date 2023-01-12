@@ -22,7 +22,3 @@ def draw_board(FEN: str) -> list[list]:
 
 if __name__ == "__main__":
     board = draw_board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
-    print(board)
-
-# draw_board(....)
-# rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
