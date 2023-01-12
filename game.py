@@ -67,6 +67,3 @@ if __name__ == "__main__":
         b.parse_fen_2()
     total = time.time() - start
     print(f"parse_fen_2 took {total} seconds to run")
-
-# draw_board(....)
-# rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
