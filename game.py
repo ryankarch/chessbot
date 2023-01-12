@@ -31,10 +31,3 @@ class Board(object):
 
     def get_valid_moves(board: list[list]):
         pass
-
-
-if __name__ == "__main__":
-    pass
-
-# draw_board(....)
-# rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1
