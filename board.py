@@ -5,6 +5,7 @@ class Board(object):
         self.fen = fen
         self.rules = {}
         self.board = []
+        self.positions = {}
 
         self.load_board_from_fen()
 
@@ -29,10 +30,6 @@ class Board(object):
         self.rules["castle"] = list(rules[1])
         self.rules["enpassant"] = rules[2]
 
-        # print(self.fen)
-        # print(self.board)
-        # print(self.rules)
-
     def load_fen_from_board(self):
         
         new_fen = []
@@ -52,25 +49,3 @@ class Board(object):
         new_fen += " " + "".join(self.rules["castle"]) + " " + self.rules["enpassant"]
 
         self.fen = new_fen
-    # populate 2d list using fen string
-
-    def get_valid_moves(self, piece: str):
-        pass
-
-def get_cell_tuple(cell: str):
-        # a b c d e f g h
-
-        # 0 1 2 3 4 5 6 7
-
-    return 8 - int(cell[1]), ord(cell[0]) - 97
-
-
-
-if __name__ == "__main__":
-    b = Board("3rkb1r/p5p1/7q/p1p2p2/7P/1PB1N1K1/P2Q4/3R3b w k - 0 28")
-    print(b.board)
-    b.load_fen_from_board()
-    print(get_cell_tuple("h1"))
-    b.load_board_from_fen()
-    print(b.fen)
-

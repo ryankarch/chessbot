@@ -1,5 +1,4 @@
 from PIL import Image
-from game import draw_board
 
 PIECE_SIZE = 133
 
