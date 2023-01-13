@@ -1,5 +1,5 @@
 from PIL import Image
-from game import Board
+from board import Board
 
 PIECE_SIZE = 133
 PIECES = {
