@@ -1,4 +1,5 @@
 from PIL import Image
+from game import Board
 
 PIECE_SIZE = 133
 PIECES = {
@@ -16,12 +17,19 @@ PIECES = {
             'K': Image.open("./assets/KingW.png")
         }
 
-def draw_board(board: list) -> None:
+def draw_board(b: Board) -> None:
+    board = b.board
+    player = b.rules["move"]
+
     if not board or len(board) != 8:
         Image.open("./assets/BoardError.jpg").save("./assets/RunningBoard.jpg")
         return
 
     final = Image.open("./assets/Board.jpg")
+
+    if player == "b":
+        board = [x[::-1] for x in board[::-1]]
+        final = final.rotate(180)
 
     for i in range(8):
         for j in range(8):
