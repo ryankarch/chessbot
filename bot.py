@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands    # gets the bot commands archive
 from discord.utils import get       # gets the finding functions
 from discord.ext import commands
-from game import Board
+from board import Board
 from img import draw_board
 
 
