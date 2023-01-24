@@ -1,13 +1,21 @@
-import time
+import helper
+import pieces
 
 class Board(object):
     def __init__(self, fen:str):
         self.fen = fen
         self.rules = {}
         self.board = []
-        self.positions = {}
+        self.white = pieces.White()
+        self.black = pieces.Black()
 
         self.load_board_from_fen()
+
+        pieces.load_positions(self.white, self.board)
+        pieces.load_positions(self.black, self.board)
+
+        print(self.white.pos)
+        print(self.black.pos)
 
     def load_board_from_fen(self):
 
@@ -49,3 +57,9 @@ class Board(object):
         new_fen += " " + "".join(self.rules["castle"]) + " " + self.rules["enpassant"]
 
         self.fen = new_fen
+
+
+if __name__ == "__main__":
+
+    b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    
