@@ -8,6 +8,7 @@ from discord.ext import commands
 from board import Board
 from img import draw_board
 import helper
+import game
 
 
 CONFIG = json.load(open("./config.json"))
@@ -26,14 +27,14 @@ async def generate(ctx, *, FEN):
     await ctx.send(file=file_)
 
 @bot.command(pass_context=True)
-async def challenge(ctx, user=''):
+async def challenge(ctx, user='', *, FEN=''):
     if not user:
         await ctx.send("Please select a user to challenge!")
     else:
         id = int(user[2:-1])
-        if ctx.author.id == id:
-            await ctx.send("You cannot challenge yourself!")
-            return
+        # if ctx.author.id == id:
+        #     await ctx.send("You cannot challenge yourself!")
+        #     return
 
         msg = await ctx.send(f"{user}: Please accept or deny this challenge.")
         await msg.add_reaction("✅")
@@ -45,6 +46,9 @@ async def challenge(ctx, user=''):
             reaction, user = await bot.wait_for('reaction_add', timeout=60.0, check=check)
             if reaction.emoji == "✅":
                 await ctx.send("Accepted!")
+                if not FEN:
+                    FEN = CONFIG["baseFEN"]
+                await game.run(bot, ctx, FEN, id)
             elif reaction.emoji == "❌":
                 await ctx.send("Denied!")
 

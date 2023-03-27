@@ -61,6 +61,14 @@ class Board(object):
 
         self.fen = new_fen
 
+    def switch_player(self):
+        if self.rules["move"] == "w":
+            self.rules["move"] = "b"
+        else:
+            self.rules["move"] = "w"
+        
+    def find_piece(self, piece, endpos, start=''):
+        pass
 
 if __name__ == "__main__":
 

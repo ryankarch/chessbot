@@ -1,8 +1,9 @@
 class Piece(object):
-    def __init__(self, color, pos):
+    def __init__(self, color, pos, abbrev):
         self.pos = pos
         self.moves = []
         self.color = color
+        self.abbrev = abbrev
         promoted = False
 
     def move_straight(self, board, limit=8):
@@ -152,8 +153,11 @@ class Knight(Piece):
         for i in range(-2, 3):
             for j in range(-2, 3):
                 if abs(i) + abs(j) == 3:
-                    if isinstance(board[self.pos[0]+i][self.pos[1]+j], Blank) or board[self.pos[0]+i][self.pos[1]+j].color != self.color:
-                        self.moves.append((self.pos[0]+i, self.pos[1]+j))
+                    try:
+                        if isinstance(board[self.pos[0]+i][self.pos[1]+j], Blank) or board[self.pos[0]+i][self.pos[1]+j].color != self.color:
+                            self.moves.append((self.pos[0]+i, self.pos[1]+j))
+                    except:
+                        pass
         self.clean_moves()
         return self.moves
 
@@ -187,22 +191,34 @@ class Player(object):
         self.__piece_conversion = {'p':Pawn, 'r':Rook, 'n':Knight, 'b':Bishop, 'q':Queen, 'k':King}
         self.in_check = False
         self.color = color
-        self.pieces = []
+        self.pieces = {'p':[], 'r':[], 'n':[], 'b':[], 'q':[], 'k':[]}
+        self.id = -1
+
+    def setid(self, id):
+        self.id = id
 
 
     def create_piece(self, piece: str, pos):
         piece = piece.lower()
-        p = self.__piece_conversion[piece](self.color, pos)
-        self.pieces.append(p)
+        p = self.__piece_conversion[piece](self.color, pos, piece)
+        self.pieces[piece].append(p)
         return p
 
 
     def remove_piece(self, piece: Piece):
-        self.pieces.remove(piece)
+        self.pieces[piece.abbrev].remove(piece)
+
+
+    def get_moves(self, type_=''):
+        if type_:
+            return {x : x.moves for x in self.pieces[type_]}
+        else:
+            return {y: {x : x.moves for x in self.pieces[y]} for y in self.pieces}
 
 
     def load_positions(self):
         pos = []
-        for piece in self.pieces:
-            pos.append(piece.pos)
+        for piece_name in self.pieces:
+            for piece in self.pieces[piece_name]:
+                pos.append(piece.pos)
         return pos
