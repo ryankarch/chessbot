@@ -8,8 +8,118 @@ class Piece(object):
         self.color = color
         promoted = False
 
+    def move_straight(self, board, limit=8):
+        i, j = self.pos
+        count = 0
+        for i_ in range(i+1, 8):
+            if count == limit:
+                break
+            if isinstance(board[i_][j], Blank):
+                self.moves.append((i_, j))
+            elif board[i_][j].color != self.color:
+                self.moves.append((i_, j))
+                break
+            else:
+                break
+            count += 1
+        count = 0
+        for i_ in range(i-1, 0, -1):
+            if count == limit:
+                break
+            if isinstance(board[i_][j], Blank):
+                self.moves.append((i_, j))
+            elif board[i_][j].color != self.color:
+                self.moves.append((i_, j))
+                break
+            else:
+                break
+            count += 1
+        count = 0
+        for j_ in range(j+1, 8):
+            if count == limit:
+                break
+            if isinstance(board[i][j_], Blank):
+                self.moves.append((i, j_))
+            elif board[i][j_].color != self.color:
+                self.moves.append((i, j_))
+                break
+            else:
+                break
+            count += 1
+        count = 0
+        for j_ in range(j-1, 0, -1):
+            if count == limit:
+                break
+            if isinstance(board[i][j_], Blank):
+                self.moves.append((i, j_))
+            elif board[i][j_].color != self.color:
+                self.moves.append((i, j_))
+                break
+            else:
+                break
+            count += 1
+
+    def move_diagonal(self, board, limit=8):
+        i, j = self.pos
+        count = 0
+        for inc in range(1, min(8-i, 8-j)):
+            if count == limit:
+                break
+            if isinstance(board[i+inc][j+inc], Blank):
+                self.moves.append((i+inc, j+inc))
+            elif board[i+inc][j+inc].color != self.color:
+                self.moves.append((i+inc, j+inc))
+                break
+            else:
+                break
+            count += 1
+        count = 0
+        for inc in range(1, min(8-i, j)):
+            if count == limit:
+                break
+            if isinstance(board[i+inc][j-inc], Blank):
+                self.moves.append((i+inc, j-inc))
+            elif board[i+inc][j-inc].color != self.color:
+                self.moves.append((i+inc, j-inc))
+                break
+            else:
+                break
+            count += 1
+        count = 0
+        for inc in range(1, min(i, 8-j)):
+            if count == limit:
+                break
+            if isinstance(board[i-inc][j+inc], Blank):
+                self.moves.append((i-inc, j+inc))
+            elif board[i-inc][j+inc].color != self.color:
+                self.moves.append((i-inc, j+inc))
+                break
+            else:
+                break
+            count += 1
+        count = 0
+        for inc in range(1, min(i, j)):
+            if count == limit:
+                break
+            if isinstance(board[i-inc][j-inc], Blank):
+                self.moves.append((i-inc, j-inc))
+            elif board[i-inc][j-inc].color != self.color:
+                self.moves.append((i-inc, j-inc))
+                break
+            else:
+                break
+            count += 1
+    
     def clean_moves(self):
         self.moves = [pos for pos in self.moves if pos[0] >= 0 and pos[0] <= 7 and pos[1] >= 0 and pos[1] <= 7]
+    
+    def check_for_checks(self, board):
+        for move in self.moves:
+            if isinstance(board[move[0]][move[1]], King):
+                self.moves.remove(move)
+                return True
+        return False
+    
 
 class Pawn(Piece):
     def get_moves(self, board):
@@ -29,91 +139,34 @@ class Pawn(Piece):
 
 class Rook(Piece):
     def get_moves(self, board):
-        i, j = self.pos
-        for i_ in range(i+1, 8):
-            if isinstance(board[i_][j], Blank):
-                self.moves.append((i_, j))
-            elif board[i_][j].color != self.color:
-                self.moves.append((i_, j))
-                break
-            else:
-                break
-        for i_ in range(i-1, 0, -1):
-            if isinstance(board[i_][j], Blank):
-                self.moves.append((i_, j))
-            elif board[i_][j].color != self.color:
-                self.moves.append((i_, j))
-                break
-            else:
-                break
-        for j_ in range(j+1, 8):
-            if isinstance(board[i][j_], Blank):
-                self.moves.append((i, j_))
-            elif board[i][j_].color != self.color:
-                self.moves.append((i, j_))
-                break
-            else:
-                break
-        for j_ in range(j-1, 0, -1):
-            if isinstance(board[i][j_], Blank):
-                self.moves.append((i, j_))
-            elif board[i][j_].color != self.color:
-                self.moves.append((i, j_))
-                break
-            else:
-                break
+        self.move_straight(board)
 
 
 class Bishop(Piece):
     def get_moves(self, board):
-        i, j = self.pos
-        for inc in range(1, min(8-i, 8-j)):
-            if isinstance(board[i+inc][j+inc], Blank):
-                self.moves.append((i+inc, j+inc))
-            elif board[i+inc][j+inc].color != self.color:
-                self.moves.append((i+inc, j+inc))
-                break
-            else:
-                break
-        for inc in range(1, min(8-i, j)):
-            if isinstance(board[i+inc][j-inc], Blank):
-                self.moves.append((i+inc, j-inc))
-            elif board[i+inc][j-inc].color != self.color:
-                self.moves.append((i+inc, j-inc))
-                break
-            else:
-                break
-        for inc in range(1, min(i, 8-j)):
-            if isinstance(board[i-inc][j+inc], Blank):
-                self.moves.append((i-inc, j+inc))
-            elif board[i-inc][j+inc].color != self.color:
-                self.moves.append((i-inc, j+inc))
-                break
-            else:
-                break
-        for inc in range(1, min(i, j)):
-            if isinstance(board[i-inc][j-inc], Blank):
-                self.moves.append((i-inc, j-inc))
-            elif board[i-inc][j-inc].color != self.color:
-                self.moves.append((i-inc, j-inc))
-                break
-            else:
-                break
+        self.move_diagonal(board)
 
 
 class Knight(Piece):
     def get_moves(self, board):
-        pass
+        for i in range(-2, 3):
+            for j in range(-2, 3):
+                if abs(i) + abs(j) == 3:
+                    if isinstance(board[self.pos[0]+i][self.pos[1]+j], Blank) or board[self.pos[0]+i][self.pos[1]+j].color != self.color:
+                        self.moves.append((self.pos[0]+i, self.pos[1]+j))
+        self.clean_moves()
 
 
 class Queen(Piece):
     def get_moves(self, board):
-        pass
+        self.move_straight(board)
+        self.move_diagonal(board)
 
 
 class King(Piece):
     def get_moves(self, board):
-        pass
+        self.move_straight(board, limit=1)
+        self.move_diagonal(board, limit=1)
 
 
 class Blank(Piece):
@@ -122,7 +175,7 @@ class Blank(Piece):
         self.moves = []
         self.color = None
     
-    def get_moves(self, board):
+    def get_moves(self, _):
         pass
 
 
