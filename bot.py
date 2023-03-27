@@ -7,6 +7,7 @@ from discord.utils import get       # gets the finding functions
 from discord.ext import commands
 from board import Board
 from img import draw_board
+import helper
 
 
 CONFIG = json.load(open("./config.json"))
@@ -53,5 +54,19 @@ async def challenge(ctx, user=''):
 @bot.command(pass_context=True)
 async def code(ctx):
     await ctx.send("My code can be found here:\nhttps://github.com/ryankarch/chessbot")
+
+@bot.command(pass_context=True)
+async def moves(ctx, move, *, FEN):
+    b = Board(FEN)
+    b.load_board_from_fen()
+    try:
+        move = helper.get_cell_tuple(move)
+        moves = b.board_piece[move[0]][move[1]].get_moves(b.board_piece)
+    except:
+        moves = []
+    draw_board(b, moves)
+    file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
+    await ctx.send(file=file_)
+    
 
 bot.run(TOKEN)

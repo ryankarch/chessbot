@@ -7,3 +7,10 @@ def get_cell_tuple(cell: str):
 
 def rotate_board(b):
     return [x[::-1] for x in b[::-1]]
+
+def rotate_moves(moves):
+    if moves == []:
+        return []
+    if moves == None:
+        return None
+    return [(7 - x[0], 7 - x[1]) for x in moves]

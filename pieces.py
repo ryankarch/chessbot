@@ -23,7 +23,7 @@ class Piece(object):
                 break
             count += 1
         count = 0
-        for i_ in range(i-1, 0, -1):
+        for i_ in range(i-1, -1, -1):
             if count == limit:
                 break
             if isinstance(board[i_][j], Blank):
@@ -47,7 +47,7 @@ class Piece(object):
                 break
             count += 1
         count = 0
-        for j_ in range(j-1, 0, -1):
+        for j_ in range(j-1, -1, -1):
             if count == limit:
                 break
             if isinstance(board[i][j_], Blank):
@@ -74,7 +74,7 @@ class Piece(object):
                 break
             count += 1
         count = 0
-        for inc in range(1, min(8-i, j)):
+        for inc in range(1, min(8-i, j+1)):
             if count == limit:
                 break
             if isinstance(board[i+inc][j-inc], Blank):
@@ -86,7 +86,7 @@ class Piece(object):
                 break
             count += 1
         count = 0
-        for inc in range(1, min(i, 8-j)):
+        for inc in range(1, min(i+1, 8-j)):
             if count == limit:
                 break
             if isinstance(board[i-inc][j+inc], Blank):
@@ -98,7 +98,7 @@ class Piece(object):
                 break
             count += 1
         count = 0
-        for inc in range(1, min(i, j)):
+        for inc in range(1, min(i+1, j+1)):
             if count == limit:
                 break
             if isinstance(board[i-inc][j-inc], Blank):
@@ -135,16 +135,19 @@ class Pawn(Piece):
             self.moves.append((i-(1*move_dir), j+1))
         
         self.clean_moves()
+        return self.moves
         
 
 class Rook(Piece):
     def get_moves(self, board):
         self.move_straight(board)
+        return self.moves
 
 
 class Bishop(Piece):
     def get_moves(self, board):
         self.move_diagonal(board)
+        return self.moves
 
 
 class Knight(Piece):
@@ -155,18 +158,21 @@ class Knight(Piece):
                     if isinstance(board[self.pos[0]+i][self.pos[1]+j], Blank) or board[self.pos[0]+i][self.pos[1]+j].color != self.color:
                         self.moves.append((self.pos[0]+i, self.pos[1]+j))
         self.clean_moves()
+        return self.moves
 
 
 class Queen(Piece):
     def get_moves(self, board):
         self.move_straight(board)
         self.move_diagonal(board)
+        return self.moves
 
 
 class King(Piece):
     def get_moves(self, board):
         self.move_straight(board, limit=1)
         self.move_diagonal(board, limit=1)
+        return self.moves
 
 
 class Blank(Piece):
@@ -176,7 +182,7 @@ class Blank(Piece):
         self.color = None
     
     def get_moves(self, _):
-        pass
+        return []
 
 
 class Player(object):
