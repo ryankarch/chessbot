@@ -1,4 +1,3 @@
-import helper
 import pieces
 
 class Board(object):

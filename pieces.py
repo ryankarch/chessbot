@@ -1,6 +1,3 @@
-from helper import rotate_board
-
-
 class Piece(object):
     def __init__(self, color, pos):
         self.pos = pos
@@ -205,6 +202,7 @@ class Player(object):
 
 
     def load_positions(self):
-            pos = []
-            for piece in self.pieces:
-                pos.append(piece.pos)
+        pos = []
+        for piece in self.pieces:
+            pos.append(piece.pos)
+        return pos
