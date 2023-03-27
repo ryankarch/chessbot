@@ -5,35 +5,39 @@ class Board(object):
     def __init__(self, fen:str):
         self.fen = fen
         self.rules = {}
-        self.board = []
-        self.white = pieces.White()
-        self.black = pieces.Black()
+        self.board_str = []
+        self.board_piece = []
+        self.white = pieces.Player("w")
+        self.black = pieces.Player("b")
 
         self.load_board_from_fen()
 
-        pieces.load_positions(self.white, self.board)
-        pieces.load_positions(self.black, self.board)
-
-        print(self.white.pos)
-        print(self.black.pos)
-
     def load_board_from_fen(self):
 
-        self.board = []
+        self.board_str = []
         string = self.fen.split()
         
         rows = string[0].split("/")
         rules = string[1:]
 
-        for i,row in enumerate(rows):
-            self.board.append([])
+        for i, row in enumerate(rows):
+            self.board_str.append([])
+            self.board_piece.append([])
+            j = 0
             for cell in row:
                 if cell.isalpha():
-                    self.board[i].append(cell)
+                    self.board_str[i].append(cell)
+                    if cell.islower():
+                        self.board_piece[i].append(self.black.create_piece(cell, (i, j)))
+                    else:
+                        self.board_piece[i].append(self.white.create_piece(cell, (i, j)))
+                    j += 1
                 else:
+                    j += int(cell)
                     for _ in range(int(cell)):
-                        self.board[i].append(".")
-
+                        self.board_str[i].append(".")
+                        self.board_piece[i].append(pieces.Blank((i, j)))
+        
         self.rules["move"] = rules[0]
         self.rules["castle"] = list(rules[1])
         self.rules["enpassant"] = rules[2]
@@ -41,7 +45,7 @@ class Board(object):
     def load_fen_from_board(self):
         
         new_fen = []
-        for row in self.board:
+        for row in self.board_str:
             new_fen.append("".join(row))
 
         new_fen = "/".join(new_fen)
@@ -61,5 +65,5 @@ class Board(object):
 
 if __name__ == "__main__":
 
-    b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    b = Board("rnbqk1nr/pppppppp/8/4b3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     
