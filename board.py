@@ -23,17 +23,21 @@ class Board(object):
         for i, row in enumerate(rows):
             self.board_str.append([])
             self.board_piece.append([])
-            for j, cell in enumerate(row):
+            j = 0
+            for cell in row:
                 if cell.isalpha():
                     self.board_str[i].append(cell)
                     if cell.islower():
                         self.board_piece[i].append(self.black.create_piece(cell, (i, j)))
                     else:
                         self.board_piece[i].append(self.white.create_piece(cell, (i, j)))
+                    j += 1
                 else:
+                    j += int(cell)
                     for _ in range(int(cell)):
                         self.board_str[i].append(".")
-
+                        self.board_piece[i].append(pieces.Blank((i, j)))
+        
         self.rules["move"] = rules[0]
         self.rules["castle"] = list(rules[1])
         self.rules["enpassant"] = rules[2]
@@ -61,5 +65,5 @@ class Board(object):
 
 if __name__ == "__main__":
 
-    b = Board("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    b = Board("rnbqk1nr/pppppppp/8/4b3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     
