@@ -4,3 +4,6 @@ def get_cell_tuple(cell: str):
         # 0 1 2 3 4 5 6 7
 
     return 8 - int(cell[1]), ord(cell[0]) - 97
+
+def rotate_board(b):
+    return [x[::-1] for x in b[::-1]]

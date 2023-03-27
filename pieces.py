@@ -1,31 +1,64 @@
-class White(object):
-    def __init__(self):
-        self.in_check = False
-        self.pos = {}
-        self.moves = []
+from helper import rotate_board
 
-class Black(object):
-    def __init__(self):
-        self.in_check = False
-        self.pos = {}
-        self.moves = []
 
-def load_positions(piece, board):
+class Piece(object):
+    def __init__(self, color, pos):
+        self.pos = pos
+        self.moves = []
+        self.color = color
+        promoted = False
+
+
+class Pawn(Piece):    
+    def get_moves(self, board):
+        pass
         
-        for ri,row in enumerate(board):
-            for ci,col in enumerate(row):
-                if isinstance(piece, White):
-                    if col.isupper():
-                        try:
-                            piece.pos[col].add((ri,ci))
-                        except:
-                            piece.pos[col] = set()
-                            piece.pos[col].add((ri,ci))
 
-                if isinstance(piece, Black):
-                    if col.islower():
-                        try:
-                            piece.pos[col].add((ri,ci))
-                        except:
-                            piece.pos[col] = set()
-                            piece.pos[col].add((ri,ci))
+class Rook(Piece):    
+    def get_moves(self, board):
+        pass
+
+
+class Bishop(Piece):    
+    def get_moves(self, board):
+        pass
+
+
+class Knight(Piece):    
+    def get_moves(self, board):
+        pass
+
+
+class Queen(Piece):    
+    def get_moves(self, board):
+        pass
+
+
+class King(Piece):    
+    def get_moves(self, board):
+        pass      
+
+
+class Player(object):
+    def __init__(self, color):
+        self.__piece_conversion = {'p':Pawn, 'r':Rook, 'n':Knight, 'b':Bishop, 'q':Queen, 'k':King}
+        self.in_check = False
+        self.color = color
+        self.pieces = []
+
+
+    def create_piece(self, piece: str, pos):
+        piece = piece.lower()
+        p = self.__piece_conversion[piece](self.color, pos)
+        self.pieces.append(p)
+        return p
+   
+    
+    def remove_piece(self, piece: Piece):
+        self.pieces.remove(piece)
+
+
+    def load_positions(self):
+            pos = []
+            for piece in self.pieces:
+                pos.append(piece.pos)

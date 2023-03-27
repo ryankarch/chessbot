@@ -1,5 +1,6 @@
 from PIL import Image
 from board import Board
+from helper import rotate_board
 
 PIECE_SIZE = 133
 PIECES = {
@@ -28,7 +29,7 @@ def draw_board(b: Board) -> None:
     final = Image.open("./assets/Board.jpg")
 
     if player == "b":
-        board = [x[::-1] for x in board[::-1]]
+        board = rotate_board(board)
         final = final.rotate(180)
 
     for i in range(8):
