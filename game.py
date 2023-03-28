@@ -16,7 +16,6 @@ async def run(bot: commands.Bot, ctx: commands.Context, FEN: str, id):
     else:
         b.white.setid(id)
         b.black.setid(ctx.author.id)
-    b.load_board_from_fen()
     turn = 0
     current_id = b.white.id
     moves = []
@@ -24,25 +23,26 @@ async def run(bot: commands.Bot, ctx: commands.Context, FEN: str, id):
         if turn:
             def check(message):
                 if current_id == message.author.id:
-                    try:
-                        helper.get_cell_tuple(message.content)
-                        return True
-                    except:
-                        return True if message.content == "resign" else False
+                    return helper.check_valid(message.content)
             try:
                 message = await bot.wait_for('message', timeout=600.0, check=check)
                 if message.content == "resign":
                     await ctx.send(f"<@{current_id}> has resigned!")
                     return
                 else:
-                    move = helper.get_cell_tuple(message.content)
-                    moves = b.board_piece[move[0]][move[1]].get_moves(b.board_piece)
+                    move = helper.process_move(message.content, b)
+                    if not move:
+                        await ctx.send("Invalid move, please try again.")
+                        continue
+                    else:
+                        await ctx.send(move)
+                        continue
             except asyncio.TimeoutError:
                 await ctx.send("Game has timed out.")
                 return
         img.draw_board(b, moves)
         file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
         await ctx.send(f"<@{b.white.id}>, it's your turn!", file=file_)
-        b.switch_player()
+        b.advance_turn(switch=False if turn == 0 else True)
         turn += 1
         current_id = b.black.id

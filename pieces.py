@@ -127,10 +127,16 @@ class Pawn(Piece):
             self.moves.append((i-(1*move_dir), j))
             if isinstance(board[i-(2*move_dir)][j], Blank) and (i == 6 and self.color == 'w' or i == 1 and self.color == 'b'):
                 self.moves.append((i-(2*move_dir), j))
-        if not isinstance(board[i-(1*move_dir)][j-1], Blank) and board[i-(1*move_dir)][j-1].color != self.color:
-            self.moves.append((i-(1*move_dir), j-1))
-        if not isinstance(board[i-(1*move_dir)][j+1], Blank) and board[i-(1*move_dir)][j+1].color != self.color:
-            self.moves.append((i-(1*move_dir), j+1))
+        try:
+            if not isinstance(board[i-(1*move_dir)][j-1], Blank) and board[i-(1*move_dir)][j-1].color != self.color:
+                self.moves.append((i-(1*move_dir), j-1))
+        except:
+            pass
+        try:
+            if not isinstance(board[i-(1*move_dir)][j+1], Blank) and board[i-(1*move_dir)][j+1].color != self.color:
+                self.moves.append((i-(1*move_dir), j+1))
+        except:
+            pass
         
         self.clean_moves()
         return self.moves
@@ -222,3 +228,8 @@ class Player(object):
             for piece in self.pieces[piece_name]:
                 pos.append(piece.pos)
         return pos
+
+    def calculate_moves(self, board):
+        for piece_name in self.pieces:
+            for piece in self.pieces[piece_name]:
+                piece.get_moves(board)

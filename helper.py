@@ -1,4 +1,12 @@
 from board import Board
+import pieces
+
+
+def get_cell_row_or_col(cell: str):
+    if cell.isnumeric():
+        return 8 - int(cell[1]), -1
+    else:
+        return -1, ord(cell[0]) - 97
 
 def get_cell_tuple(cell: str):
         # a b c d e f g h
@@ -6,6 +14,15 @@ def get_cell_tuple(cell: str):
         # 0 1 2 3 4 5 6 7
 
     return 8 - int(cell[1]), ord(cell[0]) - 97
+
+def check_valid(move):
+    if move == "resign": 
+        return True
+    if any(x not in "abcdefgh12345678x+QKNRB" for x in move):
+        return False
+    if len(move) > 2 and not move[0].isupper():
+        return False
+    return True
 
 def process_move(move, b: Board):
     piece = ''
@@ -15,30 +32,37 @@ def process_move(move, b: Board):
     if 'x' in move:
         action = "takes piece on"
         move = move.replace('x', '')
-        if len(move == 3) and move[0] in "abcdefg":
-            endpos = move[1:]
+        if len(move) == 3 and move[0] in "abcdefgh":
+            endpos = get_cell_tuple(move[1:])
             piece = "p"
             startpos = b.find_piece(piece, endpos)
         elif len(move) == 3:
-            endpos = move[1:]
-            piece = move[0]
+            endpos = get_cell_tuple(move[1:])
+            piece = move[0].lower()
             startpos = b.find_piece(piece, endpos)
         else:
-            endpos = move[2:]
-            piece = move[0]
-            startpos = b.find_piece(piece, endpos, move[1])
+            endpos = get_cell_tuple(move[2:])
+            piece = move[0].lower()
+            startpos = b.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
+        if isinstance(b.board_piece[endpos[0]][endpos[1]], pieces.Blank):
+            startpos = None
     else:
         action = "moves to"
         if len(move) == 2:
-            endpos = move
+            endpos = get_cell_tuple(move)
             piece = "p"
             startpos = b.find_piece(piece, endpos)
+        elif len(move) == 3:
+            endpos = get_cell_tuple(move[1:])
+            piece = move[0].lower()
+            startpos = b.find_piece(piece, endpos)
         else:
-            endpos = move[2:]
-            piece = move[0]
-            startpos = b.find_piece(piece, endpos, move[1])
-
-    return f"{piece} on {startpos} {action} {endpos}"
+            endpos = get_cell_tuple(move[2:])
+            piece = move[0].lower()
+            startpos = b.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
+    if startpos == None:
+        return ""
+    return f"{piece.upper()} on {startpos} {action} {endpos}"
             
     
 

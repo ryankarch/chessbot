@@ -66,8 +66,32 @@ class Board(object):
             self.rules["move"] = "b"
         else:
             self.rules["move"] = "w"
+
+    def advance_turn(self, switch=True):
+        if self.rules["move"] == "w":
+            self.white.calculate_moves(self.board_piece)
+            # include something for check
+            self.black.calculate_moves(self.board_piece)
+        else:
+            self.black.calculate_moves(self.board_piece)
+            # include something for check
+            self.white.calculate_moves(self.board_piece)
+        if switch:
+            self.switch_player()
+
         
     def find_piece(self, piece, endpos, start=''):
+        player = self.white if self.rules["move"] == 'w' else self.black
+        possible_moves = player.get_moves(piece)
+        for p in possible_moves:
+            if endpos in possible_moves[p]:
+                if start == '':
+                    return p.pos
+                elif p.pos[0] == start[0] or p.pos[1] == start[1]:
+                    return p.pos
+        return None
+    
+    def move(self, move):
         pass
 
 if __name__ == "__main__":
