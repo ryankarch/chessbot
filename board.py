@@ -92,7 +92,17 @@ class Board(object):
         return None
     
     def move(self, move):
-        pass
+        start, end = move
+        piece = self.board_piece[start[0]][start[1]]
+        other_player = self.black if self.rules["move"] == 'w' else self.white
+        self.board_piece[start[0]][start[1]] = pieces.Blank(start)
+        self.board_str[start[0]][start[1]] = "."
+        if isinstance(self.board_piece[end[0]][end[1]], pieces.Piece):
+            other_player.remove_piece(self.board_piece[end[0]][end[1]])
+        self.board_piece[end[0]][end[1]] = piece
+        self.board_str[end[0]][end[1]] = piece.abbrev.upper() if self.rules["move"] == 'w' else piece.abbrev.lower()
+        piece.update_pos(end)
+        self.load_fen_from_board()
 
 if __name__ == "__main__":
 

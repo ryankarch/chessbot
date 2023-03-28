@@ -111,6 +111,9 @@ class Piece(object):
     def clean_moves(self):
         self.moves = [pos for pos in self.moves if pos[0] >= 0 and pos[0] <= 7 and pos[1] >= 0 and pos[1] <= 7]
     
+    def update_pos(self, pos):
+        self.pos = pos
+
     def check_for_checks(self, board):
         for move in self.moves:
             if isinstance(board[move[0]][move[1]], King):
@@ -212,8 +215,10 @@ class Player(object):
 
 
     def remove_piece(self, piece: Piece):
-        self.pieces[piece.abbrev].remove(piece)
-
+        try:
+            self.pieces[piece.abbrev].remove(piece)
+        except:
+            pass
 
     def get_moves(self, type_=''):
         if type_:
