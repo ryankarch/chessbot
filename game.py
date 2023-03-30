@@ -19,6 +19,7 @@ async def run(bot: commands.Bot, ctx: commands.Context, FEN: str, id):
     turn = 0
     current_id = b.white.id
     moves = []
+    b.switch_player()
     while True:
         if turn:
             def check(message):
@@ -39,7 +40,7 @@ async def run(bot: commands.Bot, ctx: commands.Context, FEN: str, id):
             except asyncio.TimeoutError:
                 await ctx.send("Game has timed out.")
                 return
-        b.advance_turn(switch=False if turn == 0 else True)
+        b.advance_turn()
         turn += 1
         current_id = b.black.id
         img.draw_board(b, moves)

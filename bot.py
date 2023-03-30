@@ -62,15 +62,16 @@ async def code(ctx):
 @bot.command(pass_context=True)
 async def moves(ctx, move, *, FEN):
     b = Board(FEN)
-    b.load_board_from_fen()
+    b.switch_player()
     try:
         move = helper.get_cell_tuple(move)
-        moves = b.board_piece[move[0]][move[1]].get_moves(b.board_piece)
+        b.advance_turn()
+        moves = b.board_piece[move[0]][move[1]].return_moves()
     except:
         moves = []
     draw_board(b, moves)
     file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
     await ctx.send(file=file_)
-    
+        
 
 bot.run(TOKEN)

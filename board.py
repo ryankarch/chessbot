@@ -69,13 +69,13 @@ class Board(object):
 
     def advance_turn(self, switch=True):
         if self.rules["move"] == "w":
-            self.white.calculate_moves(self.board_piece)
+            check = self.white.calculate_moves(self.board_piece)
             # include something for check
-            self.black.calculate_moves(self.board_piece)
+            self.black.calculate_moves_second(self.board_piece, self.white, check)
         else:
-            self.black.calculate_moves(self.board_piece)
+            check = self.black.calculate_moves(self.board_piece)
             # include something for check
-            self.white.calculate_moves(self.board_piece)
+            self.white.calculate_moves_second(self.board_piece, self.black, check)
         if switch:
             self.switch_player()
 

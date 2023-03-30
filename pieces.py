@@ -2,6 +2,7 @@ class Piece(object):
     def __init__(self, color, pos, abbrev):
         self.pos = pos
         self.moves = []
+        self.protecting = []
         self.color = color
         self.abbrev = abbrev
         promoted = False
@@ -17,6 +18,9 @@ class Piece(object):
             elif board[i_][j].color != self.color:
                 self.moves.append((i_, j))
                 break
+            elif board[i_][j].color == self.color:
+                self.protecting.append((i_, j))
+                break
             else:
                 break
             count += 1
@@ -28,6 +32,9 @@ class Piece(object):
                 self.moves.append((i_, j))
             elif board[i_][j].color != self.color:
                 self.moves.append((i_, j))
+                break
+            elif board[i_][j].color == self.color:
+                self.protecting.append((i_, j))
                 break
             else:
                 break
@@ -41,6 +48,9 @@ class Piece(object):
             elif board[i][j_].color != self.color:
                 self.moves.append((i, j_))
                 break
+            elif board[i][j_].color == self.color:
+                self.protecting.append((i, j_))
+                break
             else:
                 break
             count += 1
@@ -52,6 +62,9 @@ class Piece(object):
                 self.moves.append((i, j_))
             elif board[i][j_].color != self.color:
                 self.moves.append((i, j_))
+                break
+            elif board[i][j_].color == self.color:
+                self.protecting.append((i, j_))
                 break
             else:
                 break
@@ -68,6 +81,9 @@ class Piece(object):
             elif board[i+inc][j+inc].color != self.color:
                 self.moves.append((i+inc, j+inc))
                 break
+            elif board[i+inc][j+inc].color == self.color:
+                self.protecting.append((i+inc, j+inc))
+                break
             else:
                 break
             count += 1
@@ -79,6 +95,9 @@ class Piece(object):
                 self.moves.append((i+inc, j-inc))
             elif board[i+inc][j-inc].color != self.color:
                 self.moves.append((i+inc, j-inc))
+                break
+            elif board[i+inc][j-inc].color == self.color:
+                self.protecting.append((i+inc, j-inc))
                 break
             else:
                 break
@@ -92,6 +111,9 @@ class Piece(object):
             elif board[i-inc][j+inc].color != self.color:
                 self.moves.append((i-inc, j+inc))
                 break
+            elif board[i-inc][j+inc].color == self.color:
+                self.protecting.append((i-inc, j+inc))
+                break
             else:
                 break
             count += 1
@@ -104,6 +126,9 @@ class Piece(object):
             elif board[i-inc][j-inc].color != self.color:
                 self.moves.append((i-inc, j-inc))
                 break
+            elif board[i-inc][j-inc].color == self.color:
+                self.protecting.append((i-inc, j-inc))
+                break
             else:
                 break
             count += 1
@@ -113,6 +138,9 @@ class Piece(object):
     
     def update_pos(self, pos):
         self.pos = pos
+
+    def return_moves(self):
+        return self.moves
 
     def check_for_checks(self, board):
         for move in self.moves:
@@ -124,6 +152,7 @@ class Piece(object):
 
 class Pawn(Piece):
     def get_moves(self, board):
+        self.protecting = []
         move_dir = 1 if self.color == 'w' else -1
         i, j = self.pos
         if isinstance(board[i-(1*move_dir)][j], Blank):
@@ -131,58 +160,73 @@ class Pawn(Piece):
             if isinstance(board[i-(2*move_dir)][j], Blank) and (i == 6 and self.color == 'w' or i == 1 and self.color == 'b'):
                 self.moves.append((i-(2*move_dir), j))
         try:
-            if not isinstance(board[i-(1*move_dir)][j-1], Blank) and board[i-(1*move_dir)][j-1].color != self.color:
-                self.moves.append((i-(1*move_dir), j-1))
+            if not isinstance(board[i-(1*move_dir)][j-1], Blank):
+                if board[i-(1*move_dir)][j-1].color != self.color:
+                    self.moves.append((i-(1*move_dir), j-1))
+                else:
+                    self.protecting.append((i-(1*move_dir), j-1))
         except:
             pass
         try:
-            if not isinstance(board[i-(1*move_dir)][j+1], Blank) and board[i-(1*move_dir)][j+1].color != self.color:
-                self.moves.append((i-(1*move_dir), j+1))
+            if not isinstance(board[i-(1*move_dir)][j+1], Blank):
+                if board[i-(1*move_dir)][j+1].color != self.color:
+                    self.moves.append((i-(1*move_dir), j+1))
+                else:
+                    self.protecting.append((i-(1*move_dir), j+1))
         except:
             pass
         
         self.clean_moves()
-        return self.moves
+        return self.check_for_checks(board)
         
 
 class Rook(Piece):
     def get_moves(self, board):
+        self.protecting = []
         self.move_straight(board)
-        return self.moves
+        return self.check_for_checks(board)
 
 
 class Bishop(Piece):
     def get_moves(self, board):
+        self.protecting = []
         self.move_diagonal(board)
-        return self.moves
+        return self.check_for_checks(board)
 
 
 class Knight(Piece):
     def get_moves(self, board):
+        self.protecting = []
         for i in range(-2, 3):
             for j in range(-2, 3):
                 if abs(i) + abs(j) == 3:
                     try:
-                        if isinstance(board[self.pos[0]+i][self.pos[1]+j], Blank) or board[self.pos[0]+i][self.pos[1]+j].color != self.color:
+                        if isinstance(board[self.pos[0]+i][self.pos[1]+j], Blank):
                             self.moves.append((self.pos[0]+i, self.pos[1]+j))
+                        else:
+                            if board[self.pos[0]+i][self.pos[1]+j].color == self.color:
+                                self.protecting.append((self.pos[0]+i, self.pos[1]+j))
                     except:
                         pass
         self.clean_moves()
-        return self.moves
+        return self.check_for_checks(board)
 
 
 class Queen(Piece):
     def get_moves(self, board):
+        self.protecting = []
         self.move_straight(board)
         self.move_diagonal(board)
-        return self.moves
+        return self.check_for_checks(board)
 
 
 class King(Piece):
-    def get_moves(self, board):
+    def get_moves(self, board, unsafe={}):
+        self.protecting = []
         self.move_straight(board, limit=1)
         self.move_diagonal(board, limit=1)
-        return self.moves
+        self.moves = list(set(self.moves) - set(unsafe))
+        return self.check_for_checks(board)
 
 
 class Blank(Piece):
@@ -222,10 +266,26 @@ class Player(object):
 
     def get_moves(self, type_=''):
         if type_:
-            return {x : x.moves for x in self.pieces[type_]}
+            return {x : x.return_moves() for x in self.pieces[type_]}
         else:
-            return {y: {x : x.moves for x in self.pieces[y]} for y in self.pieces}
+            return {y: {x : x.return_moves() for x in self.pieces[y]} for y in self.pieces}
 
+    def get_protected(self):
+        pos = []
+        for p in self.pieces:
+            for x in self.pieces[p]:
+                pos += x.protecting
+        return pos
+    
+    def get_possible(self):
+        pos = []
+        for p in self.pieces:
+            for x in self.pieces[p]:
+                pos += x.moves
+        return pos
+
+    def get_unsafe(self):
+        return self.get_protected() + self.get_possible()
 
     def load_positions(self):
         pos = []
@@ -235,6 +295,19 @@ class Player(object):
         return pos
 
     def calculate_moves(self, board):
+        checks = []
         for piece_name in self.pieces:
-            for piece in self.pieces[piece_name]:
-                piece.get_moves(board)
+            if any(x.get_moves(board) for x in self.pieces[piece_name]):
+                checks.append(True)
+        return any(checks)
+
+    def calculate_moves_second(self, board, opponent, check):
+        if check:
+            pass
+        # king = list(filter(lambda x: isinstance(x, King), self.pieces['k']))[0]
+        for piece_name in self.pieces:
+            for x in self.pieces[piece_name]:
+                if isinstance(x, King):
+                    x.get_moves(board, opponent.get_unsafe())
+                else:
+                    x.get_moves(board)
