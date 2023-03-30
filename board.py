@@ -53,6 +53,8 @@ class Board(object):
             i = 0
             while (all(char == "." for char in new_fen[new_fen.find(".") : new_fen.find(".") + i])):
                 i += 1
+                if i == len(new_fen):
+                    break
             i -= 1
             new_fen = new_fen[0 : new_fen.find(".")] + str(i) + new_fen[new_fen.find(".") + i :]
             
