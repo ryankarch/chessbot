@@ -10,12 +10,14 @@ PIECES = {
             'b':    Image.open("./assets/BishopB.png"),
             'q':    Image.open("./assets/QueenB.png"),
             'k':    Image.open("./assets/KingB.png"),
+            'k+':    Image.open("./assets/KingBCheck.png"),
             'P':    Image.open("./assets/PawnW.png"),
             'R':    Image.open("./assets/RookW.png"),
             'N':    Image.open("./assets/KnightW.png"),
             'B':    Image.open("./assets/BishopW.png"),
             'Q':    Image.open("./assets/QueenW.png"),
             'K':    Image.open("./assets/KingW.png"),
+            'K+':    Image.open("./assets/KingWCheck.png"),
             "Move": Image.open("./assets/Move.png"),
             "Take": Image.open("./assets/Take.png")
         }

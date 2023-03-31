@@ -11,6 +11,18 @@ class Board(object):
 
         self.load_board_from_fen()
 
+    def update_check(self, result):
+        if self.rules["move"] == 'w':
+            king_pos = self.white.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = f"K{result}"
+            king_pos = self.black.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = "k"
+        else:
+            king_pos = self.black.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = f"k{result}"
+            king_pos = self.white.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = "K"
+
     def load_board_from_fen(self):
 
         self.board_str = []
@@ -48,6 +60,7 @@ class Board(object):
             new_fen.append("".join(row))
 
         new_fen = "/".join(new_fen)
+        new_fen = new_fen.replace("+", "")
         
         while (new_fen.find(".") != -1):
             i = 0
@@ -71,15 +84,40 @@ class Board(object):
 
     def advance_turn(self, switch=True):
         if self.rules["move"] == "w":
+            self.white.in_check = False
             check = self.white.calculate_moves(self.board_piece)
-            # include something for check
-            self.black.calculate_moves_second(self.board_piece, self.white, check)
+            if check:
+                self.black.in_check = True
+            else:
+                self.black.in_check = False
+            self.black.calculate_moves_second(self.board_piece, self.white)
+            if switch:
+                self.switch_player()
+            if self.black.in_check:
+                if not self.black.can_move():
+                    return "#"
+                else:
+                    return "+"
+            else:
+                return ''
         else:
+            self.black.in_check = False
             check = self.black.calculate_moves(self.board_piece)
-            # include something for check
-            self.white.calculate_moves_second(self.board_piece, self.black, check)
-        if switch:
-            self.switch_player()
+            if check:
+                self.white.in_check = True
+            else:
+                self.white.in_check = False
+            self.white.calculate_moves_second(self.board_piece, self.black)
+            if switch:
+                self.switch_player()
+            if self.white.in_check:
+                if not self.white.can_move():
+                    return "#"
+                else:
+                    return "+"
+            else:
+                return ''
+        
 
         
     def find_piece(self, piece, endpos, start=''):

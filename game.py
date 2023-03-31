@@ -40,9 +40,10 @@ async def run(bot: commands.Bot, ctx: commands.Context, FEN: str, id):
             except asyncio.TimeoutError:
                 await ctx.send("Game has timed out.")
                 return
-        b.advance_turn()
+        result = b.advance_turn()
+        b.update_check(result)
         turn += 1
-        current_id = b.black.id
+        current_id = b.white.id if b.rules["move"] == 'w' else b.black.id
         img.draw_board(b, moves)
         file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
         await ctx.send(f"<@{b.white.id}>, it's your turn!", file=file_)

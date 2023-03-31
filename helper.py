@@ -28,6 +28,8 @@ def process_move(move, b: Board):
     piece = ''
     startpos = ''
     endpos = ''
+    if move.startswith("x"):
+        return None
     if 'x' in move:
         move = move.replace('x', '')
         if len(move) == 3 and move[0] in "abcdefgh":
