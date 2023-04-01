@@ -5,6 +5,7 @@ class Piece(object):
         self.protecting = []
         self.pins = []
         self.checks = []
+        self.check_extends = []
         self.color = color
         self.abbrev = abbrev
         self.promoted = False
@@ -27,6 +28,11 @@ class Piece(object):
                 self.moves.append((i_, j))
                 if isinstance(board[i_][j], King):
                     check = True
+                    for i__ in range(i_+1, 8):
+                        if isinstance(board[i__][j], Blank):
+                            self.check_extends.append((i__, j))
+                        else:
+                            break
                     break
                 pin_set.append((i_, j))
                 for i__ in range(i_+1, 8):
@@ -63,6 +69,11 @@ class Piece(object):
                 self.moves.append((i_, j))
                 if isinstance(board[i_][j], King):
                     check = True
+                    for i__ in range(i_-1, -1, -1):
+                        if isinstance(board[i__][j], Blank):
+                            self.check_extends.append((i__, j))
+                        else:
+                            break
                     break
                 pin_set.append((i_, j))
                 for i__ in range(i_-1, -1, -1):
@@ -99,6 +110,11 @@ class Piece(object):
                 self.moves.append((i, j_))
                 if isinstance(board[i][j_], King):
                     check = True
+                    for j__ in range(j_+1, 8):
+                        if isinstance(board[i][j__], Blank):
+                            self.check_extends.append((i, j__))
+                        else:
+                            break
                     break
                 pin_set.append((i, j_))
                 for j__ in range(j_+1, 8):
@@ -135,6 +151,11 @@ class Piece(object):
                 self.moves.append((i, j_))
                 if isinstance(board[i][j_], King):
                     check = True
+                    for j__ in range(j_-1, -1, -1):
+                        if isinstance(board[i][j__], Blank):
+                            self.check_extends.append((i, j__))
+                        else:
+                            break
                     break
                 pin_set.append((i, j_))
                 for j__ in range(j_-1, -1, -1):
@@ -174,6 +195,11 @@ class Piece(object):
                 self.moves.append((i+inc, j+inc))
                 if isinstance(board[i+inc][j+inc], King):
                     check = True
+                    for inc_ in range(inc + 1, min(8-i, 8-j)):
+                        if isinstance(board[i+inc_][j+inc_], Blank):
+                            self.check_extends.append((i+inc_, j+inc_))
+                        else:
+                            break
                     break
                 pin_set.append((i+inc, j+inc))
                 for inc_ in range(inc + 1, min(8-i, 8-j)):
@@ -210,6 +236,11 @@ class Piece(object):
                 self.moves.append((i+inc, j-inc))
                 if isinstance(board[i+inc][j-inc], King):
                     check = True
+                    for inc_ in range(inc + 1, min(8-i, j+1)):
+                        if isinstance(board[i+inc_][j-inc_], Blank):
+                            self.check_extends.append((i+inc_, j-inc_))
+                        else:
+                            break
                     break
                 pin_set.append((i+inc, j-inc))
                 for inc_ in range(inc + 1, min(8-i, j+1)):
@@ -246,6 +277,11 @@ class Piece(object):
                 self.moves.append((i-inc, j+inc))
                 if isinstance(board[i-inc][j+inc], King):
                     check = True
+                    for inc_ in range(inc + 1, min(i+1, 8-j)):
+                        if isinstance(board[i-inc_][j+inc_], Blank):
+                            self.check_extends.append((i-inc_, j+inc_))
+                        else:
+                            break
                     break
                 pin_set.append((i-inc, j+inc))
                 for inc_ in range(inc + 1, min(i+1, 8-j)):
@@ -282,6 +318,11 @@ class Piece(object):
                 self.moves.append((i-inc, j-inc))
                 if isinstance(board[i-inc][j-inc], King):
                     check = True
+                    for inc_ in range(inc + 1, min(i+1, j+1)):
+                        if isinstance(board[i-inc_][j-inc_], Blank):
+                            self.check_extends.append((i-inc_, j-inc_))
+                        else:
+                            break
                     break
                 pin_set.append((i-inc, j-inc))
                 for inc_ in range(inc + 1, min(i+1, j+1)):
@@ -321,6 +362,7 @@ class Pawn(Piece):
         self.moves = []
         self.protecting = []
         self.checks = []
+        self.check_extends = []
         move_dir = 1 if self.color == 'w' else -1
         i, j = self.pos
         if isinstance(board[i-(1*move_dir)][j], Blank):
@@ -372,6 +414,7 @@ class Rook(Piece):
         self.protecting = []
         self.pins = []
         self.checks = []
+        self.check_extends = []
         self.move_straight(board)
         if checks:
             check_set = {x for x in checks[0]}
@@ -392,6 +435,7 @@ class Bishop(Piece):
         self.protecting = []
         self.pins = []
         self.checks = []
+        self.check_extends = []
         self.move_diagonal(board)
         if checks:
             check_set = {x for x in checks[0]}
@@ -411,6 +455,7 @@ class Knight(Piece):
         self.moves = []
         self.protecting = []
         self.checks = []
+        self.check_extends = []
         for i in range(-2, 3):
             for j in range(-2, 3):
                 if abs(i) + abs(j) == 3 and self.pos[0]+i >= 0 and self.pos[0]+i <= 7 and self.pos[1]+j >= 0 and self.pos[1]+j <= 7:
@@ -447,6 +492,7 @@ class Queen(Piece):
         self.protecting = []
         self.pins = []
         self.checks = []
+        self.check_extends = []
         self.move_straight(board)
         self.move_diagonal(board)
         if checks:
@@ -526,6 +572,13 @@ class Player(object):
             for x in self.pieces[p]:
                 pos += x.protecting
         return pos
+
+    def get_extend_check(self):
+        pos = []
+        for p in self.pieces:
+            for x in self.pieces[p]:
+                pos += x.check_extends
+        return pos
     
     def get_pinned(self):
         pins = []
@@ -549,7 +602,7 @@ class Player(object):
         return pos
 
     def get_unsafe(self):
-        return self.get_protected() + self.get_possible()
+        return self.get_protected() + self.get_possible() + self.get_extend_check()
 
     def load_positions(self):
         pos = []

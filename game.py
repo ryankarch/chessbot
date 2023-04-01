@@ -46,4 +46,9 @@ async def run(bot: commands.Bot, ctx: commands.Context, FEN: str, id):
         current_id = b.white.id if b.rules["move"] == 'w' else b.black.id
         img.draw_board(b, moves)
         file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
-        await ctx.send(f"<@{b.white.id}>, it's your turn!", file=file_)
+        if result == '#':
+            winner = b.black.id if b.rules["move"] == 'w' else b.white.id
+            await ctx.send(f"<@{winner}> has won!", file=file_)
+            return
+        else:
+            await ctx.send(f"<@{current_id}>, it's your turn!", file=file_)

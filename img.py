@@ -11,6 +11,7 @@ PIECES = {
             'q':    Image.open("./assets/QueenB.png"),
             'k':    Image.open("./assets/KingB.png"),
             'k+':    Image.open("./assets/KingBCheck.png"),
+            'k#':    Image.open("./assets/KingBCheckMate.png"),
             'P':    Image.open("./assets/PawnW.png"),
             'R':    Image.open("./assets/RookW.png"),
             'N':    Image.open("./assets/KnightW.png"),
@@ -18,6 +19,7 @@ PIECES = {
             'Q':    Image.open("./assets/QueenW.png"),
             'K':    Image.open("./assets/KingW.png"),
             'K+':    Image.open("./assets/KingWCheck.png"),
+            'K#':    Image.open("./assets/KingWCheckMate.png"),
             "Move": Image.open("./assets/Move.png"),
             "Take": Image.open("./assets/Take.png")
         }
