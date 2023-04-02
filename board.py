@@ -122,14 +122,21 @@ class Board(object):
         
     def find_piece(self, piece, endpos, start=''):
         player = self.white if self.rules["move"] == 'w' else self.black
+        pos = None
         possible_moves = player.get_moves(piece)
         for p in possible_moves:
             if endpos in possible_moves[p]:
                 if start == '':
-                    return p.pos
+                    if pos == None:
+                        pos = p.pos
+                    else:
+                        return None
                 elif p.pos[0] == start[0] or p.pos[1] == start[1]:
-                    return p.pos
-        return None
+                    if pos == None:
+                        pos = p.pos
+                    else:
+                        return None
+        return pos
     
     def move(self, move):
         start, end = move

@@ -1,3 +1,5 @@
+from threading import Thread as t
+
 class Piece(object):
     def __init__(self, color, pos, abbrev):
         self.pos = pos
@@ -612,16 +614,26 @@ class Player(object):
         return pos
 
     def calculate_moves(self, board):
-        checks = []
+        threads = []
         for piece_name in self.pieces:
-            if any(x.get_moves(board) for x in self.pieces[piece_name]):
-                checks.append(True)
-        return any(checks)
+            for x in self.pieces[piece_name]:
+                threads.append(t(target=x.get_moves, args=(board,)))
+                threads[-1].run()
+        for thread in threads:
+            while thread.is_alive():
+                pass
+        return len(self.get_checks()) != 0
 
     def calculate_moves_second(self, board, opponent):
+        threads = []
         for piece_name in self.pieces:
             for x in self.pieces[piece_name]:
                 if isinstance(x, King):
-                    x.get_moves(board, unsafe=opponent.get_unsafe())
+                    threads.append(t(target=x.get_moves, args=(board, opponent.get_unsafe())))
+                    threads[-1].run()
                 else:
-                    x.get_moves(board, paths=opponent.get_pinned(), checks=opponent.get_checks())
+                    threads.append(t(target=x.get_moves, args=(board, opponent.get_pinned(), opponent.get_checks())))
+                    threads[-1].run()
+        for thread in threads:
+            while thread.is_alive():
+                pass

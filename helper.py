@@ -4,7 +4,7 @@ import pieces
 
 def get_cell_row_or_col(cell: str):
     if cell.isnumeric():
-        return 8 - int(cell[1]), -1
+        return 8 - int(cell[0]), -1
     else:
         return -1, ord(cell[0]) - 97
 
