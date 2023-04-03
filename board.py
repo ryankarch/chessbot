@@ -142,13 +142,20 @@ class Board(object):
         start, end = move
         piece = self.board_piece[start[0]][start[1]]
         other_player = self.black if self.rules["move"] == 'w' else self.white
+        en_passant = isinstance(piece, pieces.Pawn) and start[1] != end[1] and self.board_str[end[0]][end[1]] == '.'
         self.board_piece[start[0]][start[1]] = pieces.Blank(start)
         self.board_str[start[0]][start[1]] = "."
         if isinstance(self.board_piece[end[0]][end[1]], pieces.Piece):
             other_player.remove_piece(self.board_piece[end[0]][end[1]])
+        if en_passant:
+            other_player.remove_piece(self.board_piece[start[0]][end[1]])
+            self.board_str[start[0]][end[1]] = "."
+            self.board_piece[start[0]][end[1]] = pieces.Blank((start[0], end[1]))
         self.board_piece[end[0]][end[1]] = piece
         self.board_str[end[0]][end[1]] = piece.abbrev.upper() if self.rules["move"] == 'w' else piece.abbrev.lower()
         piece.update_pos(end)
+        if isinstance(piece, pieces.Pawn):
+            piece.en_passant = False if abs(end[0]-start[0]) == 1 else True
         self.load_fen_from_board()
 
 if __name__ == "__main__":

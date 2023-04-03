@@ -44,7 +44,7 @@ def process_move(move, b: Board):
             endpos = get_cell_tuple(move[2:])
             piece = move[0].lower()
             startpos = b.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
-        if isinstance(b.board_piece[endpos[0]][endpos[1]], pieces.Blank):
+        if isinstance(b.board_piece[endpos[0]][endpos[1]], pieces.Blank) and not (isinstance(b.board_piece[startpos[0]][endpos[1]], pieces.Pawn) and b.board_piece[startpos[0]][endpos[1]].en_passant):
             startpos = None
     else:
         if len(move) == 2:

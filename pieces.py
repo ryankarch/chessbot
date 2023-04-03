@@ -360,6 +360,10 @@ class Piece(object):
     
 
 class Pawn(Piece):
+    def __init__(self, color, pos, abbrev):
+        super().__init__(color, pos, abbrev)
+        self.en_passant = False
+
     def get_moves(self, board, paths=[], checks=[]):
         self.moves = []
         self.protecting = []
@@ -371,31 +375,33 @@ class Pawn(Piece):
             self.moves.append((i-(1*move_dir), j))
             if isinstance(board[i-(2*move_dir)][j], Blank) and (i == 6 and self.color == 'w' or i == 1 and self.color == 'b'):
                 self.moves.append((i-(2*move_dir), j))
-        try:
-            if not (i-(1*move_dir) < 0 or i-(1*move_dir) > 7 or j-1 < 0):
-                if not isinstance(board[i-(1*move_dir)][j-1], Blank):
-                    if board[i-(1*move_dir)][j-1].color != self.color:
-                        if isinstance(board[i-(1*move_dir)][j-1], King):
-                            self.checks.append([self.pos])
-                        else:
-                            self.moves.append((i-(1*move_dir), j-1))
-                    else:
-                        self.protecting.append((i-(1*move_dir), j-1))
-        except:
-            pass
-        try:
-            if not (i-(1*move_dir) < 0 or i-(1*move_dir) > 7 or j+1 > 7):
-                if not isinstance(board[i-(1*move_dir)][j+1], Blank):
-                    if board[i-(1*move_dir)][j+1].color != self.color:
-                        if isinstance(board[i-(1*move_dir)][j+1], King):
-                            self.checks.append([self.pos])
-                        else:
-                            self.moves.append((i-(1*move_dir), j+1))
-                    else:
-                        self.protecting.append((i-(1*move_dir), j+1))
-        except:
-            pass
         
+        if not (i-(1*move_dir) < 0 or i-(1*move_dir) > 7 or j-1 < 0):
+            if not isinstance(board[i-(1*move_dir)][j-1], Blank):
+                if board[i-(1*move_dir)][j-1].color != self.color:
+                    if isinstance(board[i-(1*move_dir)][j-1], King):
+                        self.checks.append([self.pos])
+                    else:
+                        self.moves.append((i-(1*move_dir), j-1))
+                else:
+                    self.protecting.append((i-(1*move_dir), j-1))
+            if isinstance(board[i][j-1], Pawn):
+                if board[i][j-1].en_passant and board[i][j-1].color != self.color:
+                    self.moves.append((i-(1*move_dir), j-1))
+        
+        if not (i-(1*move_dir) < 0 or i-(1*move_dir) > 7 or j+1 > 7):
+            if not isinstance(board[i-(1*move_dir)][j+1], Blank):
+                if board[i-(1*move_dir)][j+1].color != self.color:
+                    if isinstance(board[i-(1*move_dir)][j+1], King):
+                        self.checks.append([self.pos])
+                    else:
+                        self.moves.append((i-(1*move_dir), j+1))
+                else:
+                    self.protecting.append((i-(1*move_dir), j+1))
+            if isinstance(board[i][j+1], Pawn):
+                if board[i][j+1].en_passant and board[i][j+1].color != self.color:
+                    self.moves.append((i-(1*move_dir), j+1))
+
         self.clean_moves()
         if checks:
             check_set = {x for x in checks[0]}
