@@ -1,4 +1,3 @@
-import helper
 import pieces
 
 class Board(object):
@@ -11,6 +10,18 @@ class Board(object):
         self.black = pieces.Player("b")
 
         self.load_board_from_fen()
+
+    def update_check(self, result):
+        if self.rules["move"] == 'w':
+            king_pos = self.white.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = f"K{result}"
+            king_pos = self.black.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = "k"
+        else:
+            king_pos = self.black.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = f"k{result}"
+            king_pos = self.white.pieces["k"][0].pos
+            self.board_str[king_pos[0]][king_pos[1]] = "K"
 
     def load_board_from_fen(self):
 
@@ -49,11 +60,14 @@ class Board(object):
             new_fen.append("".join(row))
 
         new_fen = "/".join(new_fen)
+        new_fen = new_fen.replace("+", "")
         
         while (new_fen.find(".") != -1):
             i = 0
             while (all(char == "." for char in new_fen[new_fen.find(".") : new_fen.find(".") + i])):
                 i += 1
+                if i == len(new_fen):
+                    break
             i -= 1
             new_fen = new_fen[0 : new_fen.find(".")] + str(i) + new_fen[new_fen.find(".") + i :]
             
@@ -62,6 +76,87 @@ class Board(object):
 
         self.fen = new_fen
 
+    def switch_player(self):
+        if self.rules["move"] == "w":
+            self.rules["move"] = "b"
+        else:
+            self.rules["move"] = "w"
+
+    def advance_turn(self, switch=True):
+        if self.rules["move"] == "w":
+            self.white.in_check = False
+            check = self.white.calculate_moves(self.board_piece)
+            if check:
+                self.black.in_check = True
+            else:
+                self.black.in_check = False
+            self.black.calculate_moves_second(self.board_piece, self.white)
+            if switch:
+                self.switch_player()
+            if self.black.in_check:
+                if not self.black.can_move():
+                    return "#"
+                else:
+                    return "+"
+            else:
+                return ''
+        else:
+            self.black.in_check = False
+            check = self.black.calculate_moves(self.board_piece)
+            if check:
+                self.white.in_check = True
+            else:
+                self.white.in_check = False
+            self.white.calculate_moves_second(self.board_piece, self.black)
+            if switch:
+                self.switch_player()
+            if self.white.in_check:
+                if not self.white.can_move():
+                    return "#"
+                else:
+                    return "+"
+            else:
+                return ''
+        
+
+        
+    def find_piece(self, piece, endpos, start=''):
+        player = self.white if self.rules["move"] == 'w' else self.black
+        pos = None
+        possible_moves = player.get_moves(piece)
+        for p in possible_moves:
+            if endpos in possible_moves[p]:
+                if start == '':
+                    if pos == None:
+                        pos = p.pos
+                    else:
+                        return None
+                elif p.pos[0] == start[0] or p.pos[1] == start[1]:
+                    if pos == None:
+                        pos = p.pos
+                    else:
+                        return None
+        return pos
+    
+    def move(self, move):
+        start, end = move
+        piece = self.board_piece[start[0]][start[1]]
+        other_player = self.black if self.rules["move"] == 'w' else self.white
+        en_passant = isinstance(piece, pieces.Pawn) and start[1] != end[1] and self.board_str[end[0]][end[1]] == '.'
+        self.board_piece[start[0]][start[1]] = pieces.Blank(start)
+        self.board_str[start[0]][start[1]] = "."
+        if isinstance(self.board_piece[end[0]][end[1]], pieces.Piece):
+            other_player.remove_piece(self.board_piece[end[0]][end[1]])
+        if en_passant:
+            other_player.remove_piece(self.board_piece[start[0]][end[1]])
+            self.board_str[start[0]][end[1]] = "."
+            self.board_piece[start[0]][end[1]] = pieces.Blank((start[0], end[1]))
+        self.board_piece[end[0]][end[1]] = piece
+        self.board_str[end[0]][end[1]] = piece.abbrev.upper() if self.rules["move"] == 'w' else piece.abbrev.lower()
+        piece.update_pos(end)
+        if isinstance(piece, pieces.Pawn):
+            piece.en_passant = False if abs(end[0]-start[0]) == 1 else True
+        self.load_fen_from_board()
 
 if __name__ == "__main__":
 
