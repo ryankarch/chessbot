@@ -5,7 +5,7 @@ import discord
 from discord.ext import commands    # gets the bot commands archive
 from discord.utils import get       # gets the finding functions
 from discord.ext import commands
-from board import Board
+from Engine import Engine
 from img import draw_board
 import helper
 import game
@@ -20,9 +20,9 @@ bot = commands.Bot(command_prefix='!', intents=intents)
 
 @bot.command(pass_context=True)
 async def generate(ctx, *, FEN):
-    b = Board(FEN)
-    b.load_board_from_fen()
-    draw_board(b)
+    e = Engine(FEN)
+    e.load_board_from_fen()
+    draw_board(e)
     file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
     await ctx.send(file=file_)
 
@@ -61,15 +61,15 @@ async def code(ctx):
 
 @bot.command(pass_context=True)
 async def moves(ctx, move, *, FEN):
-    b = Board(FEN)
-    b.switch_player()
+    e = Engine(FEN)
+    e.switch_player()
     try:
         move = helper.get_cell_tuple(move)
-        b.advance_turn()
-        moves = b.board_piece[move[0]][move[1]].return_moves()
+        e.advance_turn()
+        moves = e.board_piece[move[0]][move[1]].return_moves()
     except:
         moves = []
-    draw_board(b, moves)
+    draw_board(e, moves)
     file_ = discord.File("./assets/RunningBoard.jpg", filename="board.png")
     await ctx.send(file=file_)
         

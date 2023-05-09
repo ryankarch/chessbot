@@ -1,13 +1,13 @@
-import pieces
+import Pieces
 
-class Board(object):
+class Engine(object):
     def __init__(self, fen:str):
         self.fen = fen
         self.rules = {}
         self.board_str = []
         self.board_piece = []
-        self.white = pieces.Player("w")
-        self.black = pieces.Player("b")
+        self.white = Pieces.Player("w")
+        self.black = Pieces.Player("b")
 
         self.load_board_from_fen()
 
@@ -47,7 +47,7 @@ class Board(object):
                     j += int(cell)
                     for _ in range(int(cell)):
                         self.board_str[i].append(".")
-                        self.board_piece[i].append(pieces.Blank((i, j)))
+                        self.board_piece[i].append(Pieces.Blank((i, j)))
         
         self.rules["move"] = rules[0]
         self.rules["castle"] = list(rules[1])
@@ -142,23 +142,23 @@ class Board(object):
         start, end = move
         piece = self.board_piece[start[0]][start[1]]
         other_player = self.black if self.rules["move"] == 'w' else self.white
-        en_passant = isinstance(piece, pieces.Pawn) and start[1] != end[1] and self.board_str[end[0]][end[1]] == '.'
-        self.board_piece[start[0]][start[1]] = pieces.Blank(start)
+        en_passant = isinstance(piece, Pieces.Pawn) and start[1] != end[1] and self.board_str[end[0]][end[1]] == '.'
+        self.board_piece[start[0]][start[1]] = Pieces.Blank(start)
         self.board_str[start[0]][start[1]] = "."
-        if isinstance(self.board_piece[end[0]][end[1]], pieces.Piece):
+        if isinstance(self.board_piece[end[0]][end[1]], Pieces.Piece):
             other_player.remove_piece(self.board_piece[end[0]][end[1]])
         if en_passant:
             other_player.remove_piece(self.board_piece[start[0]][end[1]])
             self.board_str[start[0]][end[1]] = "."
-            self.board_piece[start[0]][end[1]] = pieces.Blank((start[0], end[1]))
+            self.board_piece[start[0]][end[1]] = Pieces.Blank((start[0], end[1]))
         self.board_piece[end[0]][end[1]] = piece
         self.board_str[end[0]][end[1]] = piece.abbrev.upper() if self.rules["move"] == 'w' else piece.abbrev.lower()
         piece.update_pos(end)
-        if isinstance(piece, pieces.Pawn):
+        if isinstance(piece, Pieces.Pawn):
             piece.en_passant = False if abs(end[0]-start[0]) == 1 else True
         self.load_fen_from_board()
 
 if __name__ == "__main__":
 
-    b = Board("rnbqk1nr/pppppppp/8/4b3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
+    e = Engine("rnbqk1nr/pppppppp/8/4b3/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1")
     

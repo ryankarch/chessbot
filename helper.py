@@ -1,5 +1,4 @@
-from board import Board
-import pieces
+from Engine import Engine, Pieces
 
 
 def get_cell_row_or_col(cell: str):
@@ -24,7 +23,7 @@ def check_valid(move):
         return False
     return True
 
-def process_move(move, b: Board):
+def process_move(move, e: Engine):
     piece = ''
     startpos = ''
     endpos = ''
@@ -35,30 +34,30 @@ def process_move(move, b: Board):
         if len(move) == 3 and move[0] in "abcdefgh":
             endpos = get_cell_tuple(move[1:])
             piece = "p"
-            startpos = b.find_piece(piece, endpos)
+            startpos = e.find_piece(piece, endpos)
         elif len(move) == 3:
             endpos = get_cell_tuple(move[1:])
             piece = move[0].lower()
-            startpos = b.find_piece(piece, endpos)
+            startpos = e.find_piece(piece, endpos)
         else:
             endpos = get_cell_tuple(move[2:])
             piece = move[0].lower()
-            startpos = b.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
-        if isinstance(b.board_piece[endpos[0]][endpos[1]], pieces.Blank) and not (isinstance(b.board_piece[startpos[0]][endpos[1]], pieces.Pawn) and b.board_piece[startpos[0]][endpos[1]].en_passant):
+            startpos = e.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
+        if isinstance(e.board_piece[endpos[0]][endpos[1]], Pieces.Blank) and not (isinstance(e.board_piece[startpos[0]][endpos[1]], Pieces.Pawn) and e.board_piece[startpos[0]][endpos[1]].en_passant):
             startpos = None
     else:
         if len(move) == 2:
             endpos = get_cell_tuple(move)
             piece = "p"
-            startpos = b.find_piece(piece, endpos)
+            startpos = e.find_piece(piece, endpos)
         elif len(move) == 3:
             endpos = get_cell_tuple(move[1:])
             piece = move[0].lower()
-            startpos = b.find_piece(piece, endpos)
+            startpos = e.find_piece(piece, endpos)
         else:
             endpos = get_cell_tuple(move[2:])
             piece = move[0].lower()
-            startpos = b.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
+            startpos = e.find_piece(piece, endpos, get_cell_row_or_col(move[1]))
     if startpos == None:
         return ""
     return (startpos, endpos)
