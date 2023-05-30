@@ -1,5 +1,5 @@
 from PIL import Image
-from board import Board
+from Engine import Engine
 import helper
 
 PIECE_SIZE = 133
@@ -24,9 +24,9 @@ PIECES = {
             "Take": Image.open("./assets/Take.png")
         }
 
-def draw_board(b: Board, moves = []) -> None:
-    board = b.board_str
-    player = b.rules["move"]
+def draw_board(e: Engine, moves = []) -> None:
+    board = e.board_str
+    player = e.rules["move"]
 
     if not board or len(board) != 8:
         Image.open("./assets/BoardError.jpg").save("./assets/RunningBoard.jpg")

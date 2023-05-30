@@ -1,4 +1,4 @@
-import Pieces
+import Engine.Pieces as Pieces
 
 class Engine(object):
     def __init__(self, fen:str):
